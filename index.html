@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Ascii Art</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ASCII Art Website — Darker + Buttons + Preview</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --panel: #0f1720;
+      --muted: #9aa4b2;
+      --text: #e6eef6;
+      --accent: #60a5fa; /* bluish accent for buttons */
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    [data-theme="light"] {
+      --bg: #f3f6fb;
+      --panel: #ffffff;
+      --muted: #5b6b7a;
+      --text: #0b1720;
+      --accent: #0369a1;
+      --glass: rgba(0,0,0,0.04);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      background: linear-gradient(180deg,var(--bg), #071022 120%);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--text);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px;
+      gap:20px;
+    }
+
+    .page {
+      width:100%;
+      max-width:980px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .title {
+      font-weight:800;
+      letter-spacing:.6px;
+      font-size:1.25rem;
+    }
+    .subtitle { color:var(--muted); font-size:0.9rem; margin-top:6px; }
+
+    .controls { display:flex; gap:8px; align-items:center; }
+
+    button.btn {
+      background: linear-gradient(180deg,var(--panel),var(--glass));
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--text);
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-family:inherit;
+      font-size:0.9rem;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      box-shadow: 0 4px 18px rgba(2,6,23,0.45);
+    }
+    button.btn.secondary{
+      background: transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--muted);
+      box-shadow:none;
+    }
+
+    main { display:grid; gap:18px; grid-template-columns: 1fr; }
+    @media(min-width:880px){
+      main { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .panel {
+      background: linear-gradient(180deg,var(--panel), rgba(0,0,0,0.04));
+      border-radius:14px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .panel h3{
+      margin:0;
+      font-size:0.95rem;
+      font-weight:700;
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .action-row { display:flex; gap:8px; align-items:center; }
+
+    .pre-wrap{
+      background: rgba(0,0,0,0.06);
+      padding:12px;
+      border-radius:10px;
+      overflow:auto;
+      min-height:88px;
+      line-height:1.12;
+      font-size:14px;
+      white-space:pre;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+
+    /* darker, richer block colors */
+    .block1 .pre-wrap { background: linear-gradient(180deg,#071a2b,#071423); color:#d7eefb; border-left:6px solid #054a7a; }
+    .block2 .pre-wrap { background: linear-gradient(180deg,#07220f,#071912); color:#dff7e6; border-left:6px solid #0b8a3e; }
+    .block3 .pre-wrap { background: linear-gradient(180deg,#2b0738,#14061b); color:#f1e6ff; border-left:6px solid #6b2fa6; }
+
+    /* small helper */
+    .muted { color:var(--muted); font-size:0.85rem; }
+
+    footer { margin-top:18px; color:var(--muted); font-size:0.8rem; text-align:center; }
+
+    /* Preview modal */
+    #previewModal {
+      display:none;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.85);
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+      padding:20px;
+    }
+    #previewModalContent {
+      background: #0f1720;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 90%;
+      max-height: 80%;
+      overflow:auto;
+      position:relative;
+      box-shadow:0 8px 30px rgba(0,0,0,0.75);
+    }
+    #previewContent {
+      white-space: pre;
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--text);
+    }
+    #previewModal button.closePreview {
+      position:absolute;
+      top:10px;
+      right:10px;
+      padding:6px 12px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      background:var(--panel);
+      color:var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="pageRoot" data-theme="dark">
+    <header>
+      <div>
+        <div class="title">ASCII Art Showcase</div>
+        <div class="subtitle muted">Preserves spacing — now with copy, preview & download buttons.</div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="downloadBtn" title="Download this page as an HTML file">⬇️ Download HTML</button>
+        <button class="btn secondary" id="toggleTheme">🌗 Toggle Light</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Block 1 -->
+      <section class="panel block1" aria-labelledby="b1">
+        <h3 id="b1">Block 1
+          <span class="action-row">
+            <button class="btn" onclick="copyBlock('art1')">📋 Copy</button>
+            <button class="btn secondary" onclick="previewBlock('art1')">🔍 Preview</button>
+          </span>
+        </h3>
+        <div class="pre-wrap" id="art1">
+___________
+|---------|
+|---------|
+-------------------
+X        X
+^
+ -        -
+|--------|
+
+----
+        </div>
+      </section>
+
+      <!-- Block 2 -->
+      <section class="panel block2" aria-labelledby="b2">
+        <h3 id="b2">Block 2
+          <span class="action-row">
+            <button class="btn" onclick="copyBlock('art2')">📋 Copy</button>
+            <button class="btn secondary" onclick="previewBlock('art2')">🔍 Preview</button>
+          </span>
+        </h3>
+        <div class="pre-wrap" id="art2">
+^^___
+|  -   ___
+|         |
+|    _____
+|
+        </div>
+      </section>
+
+      <!-- Block 3 -->
+      <section class="panel block3" aria-labelledby="b3">
+        <h3 id="b3">Block 3
+          <span class="action-row">
+            <button class="btn" onclick="copyBlock('art3')">📋 Copy</button>
+            <button class="btn secondary" onclick="previewBlock('art3')">🔍 Preview</button>
+          </span>
+        </h3>
+        <div class="pre-wrap" id="art3">
+XxX      XxX
+XX
+\          /
+WWWWWWWWWW
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Tip: Use the Copy or Preview buttons to interact with the ASCII.
+    </footer>
+  </div>
+
+  <!-- Preview Modal -->
+  <div id="previewModal">
+    <div id="previewModalContent">
+      <button class="closePreview" onclick="closePreview()">❌ Close</button>
+      <pre id="previewContent"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Copy the innerText of a pre area
+    function copyBlock(id){
+      const el = document.getElementById(id);
+      if(!el) return alert("Block not found.");
+      const text = el.innerText.replace(/\u00A0/g, ' '); 
+      navigator.clipboard.writeText(text).then(()=> {
+        alert("Copied to clipboard!");
+      }).catch(err => {
+        alert("Copy failed — your browser may block clipboard access.");
+        console.error(err);
+      });
+    }
+
+    // Preview ASCII in modal
+    function previewBlock(id){
+      const el = document.getElementById(id);
+      if(!el) return alert("Block not found.");
+      const preview = document.getElementById('previewModal');
+      const content = document.getElementById('previewContent');
+      content.textContent = el.innerText;
+      preview.style.display = 'flex';
+    }
+
+    function closePreview(){
+      document.getElementById('previewModal').style.display = 'none';
+    }
+
+    // Download full page as HTML
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const html = document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ascii-art-page.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Toggle theme dark/light
+    document.getElementById('toggleTheme').addEventListener('click', function(){
+      const root = document.getElementById('pageRoot');
+      const current = root.getAttribute('data-theme');
+      if(current === 'dark'){
+        root.setAttribute('data-theme','light');
+        this.textContent = '🌗 Toggle Dark';
+      } else {
+        root.setAttribute('data-theme','dark');
+        this.textContent = '🌗 Toggle Light';
+      }
+    });
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
